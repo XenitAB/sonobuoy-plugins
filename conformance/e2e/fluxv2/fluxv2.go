@@ -6,6 +6,7 @@ import (
 	"github.com/onsi/ginkgo"
 	"github.com/onsi/gomega"
 
+	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1beta1"
 	sourcev1 "github.com/fluxcd/source-controller/api/v1beta1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -24,7 +25,8 @@ var _ = ginkgo.Describe("fluxv2", func() {
 	ginkgo.BeforeEach(func() {
 		err := sourcev1.AddToScheme(scheme.Scheme)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
+		err = kustomizev1.AddToScheme(scheme.Scheme)
+		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		k8sClient, err = client.New(f.ClientConfig(), client.Options{Scheme: scheme.Scheme})
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
@@ -46,17 +48,17 @@ var _ = ginkgo.Describe("fluxv2", func() {
 		gomega.Expect(res.Status.String()).To(gomega.Equal("Current"))
 
 		ginkgo.By("checking the flux-system kustomization")
-		key := types.NamespacedName{
+		key = types.NamespacedName{
 			Name:      "flux-system",
 			Namespace: "flux-system",
 		}
-		repo := &sourcev1.GitRepository{}
-		err := k8sClient.Get(context.TODO(), key, repo)
+		kust := &kustomizev1.Kustomization{}
+		err = k8sClient.Get(context.TODO(), key, kust)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 
-		obj, err := runtime.DefaultUnstructuredConverter.ToUnstructured(repo)
+		obj, err = runtime.DefaultUnstructuredConverter.ToUnstructured(kust)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-		res, err := status.Compute(&unstructured.Unstructured{Object: obj})
+		res, err = status.Compute(&unstructured.Unstructured{Object: obj})
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		gomega.Expect(res.Status.String()).To(gomega.Equal("Current"))
 	})

@@ -7,8 +7,8 @@ require (
 	github.com/coreos/go-systemd v0.0.0-20190620071333-e64a0ec8b42a // indirect
 	github.com/docker/spdystream v0.0.0-20181023171402-6480d4af844c // indirect
 	github.com/emicklei/go-restful v2.9.6+incompatible // indirect
+	github.com/fluxcd/kustomize-controller/api v0.5.3
 	github.com/fluxcd/source-controller/api v0.5.6
-	github.com/go-logr/logr v0.2.1-0.20200730175230-ee2de8da5be6 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0 // indirect
 	github.com/onsi/ginkgo v1.13.0
