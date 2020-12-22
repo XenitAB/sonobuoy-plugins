@@ -36,6 +36,7 @@ import (
 
 	// test sources
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/fluxv2"
+	_ "github.com/xenitab/sonobuoy-plugins/e2e/ingress"
 )
 
 func TestMain(m *testing.M) {
@@ -43,8 +44,6 @@ func TestMain(m *testing.M) {
 
 	klog.SetOutput(GinkgoWriter)
 	logs.InitLogs()
-
-	//deploy.DefineTests()
 
 	config.CopyFlags(config.Flags, flag.CommandLine)
 	framework.RegisterCommonFlags(flag.CommandLine)

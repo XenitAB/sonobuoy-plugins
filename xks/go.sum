@@ -216,7 +216,6 @@ github.com/evanphx/json-patch v4.9.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLi
 github.com/exponent-io/jsonpath v0.0.0-20151013193312-d6023ce2651d/go.mod h1:ZZMPRZwes7CROmyNKgQzC3XPs6L/G2EJLHddWejkmf4=
 github.com/fatih/camelcase v1.0.0/go.mod h1:yN2Sb0lFhZJUdVvtELVWefmrXpuZESvPmqwoZc+/fpc=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
-github.com/fluxcd/kustomize-controller v0.5.3 h1:6y4ckgtAwMg4VGXUmUrSezde5kFs3I/uFT1+VV+xYq0=
 github.com/fluxcd/kustomize-controller/api v0.5.3 h1:zZiWFBQkNytLffOOJJttGFQk7BIUHpT2yoOCG4nyqII=
 github.com/fluxcd/kustomize-controller/api v0.5.3/go.mod h1:8Z52j63kRf+NjtVmiJFvI8xLje3ncFTs/uMxcrEJPIA=
 github.com/fluxcd/pkg/apis/meta v0.5.0 h1:FaU++mQY0g4sVVl+hG+vk0CXBLbb4EVfRuzs3IjLXvo=
@@ -248,12 +247,11 @@ github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9
 github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
 github.com/go-logr/logr v0.1.0/go.mod h1:ixOQHD9gLJUVQQ2ZOR7zLEifBX6tGkNJF4QyIY7sIas=
 github.com/go-logr/logr v0.2.0/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTgseGU=
-github.com/go-logr/logr v0.2.1-0.20200730175230-ee2de8da5be6 h1:ZPVluSmhtMIHlqUDMZu70FgMpRzbQfl4h9oKCAXOVDE=
-github.com/go-logr/logr v0.2.1-0.20200730175230-ee2de8da5be6/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTgseGU=
 github.com/go-logr/logr v0.2.1 h1:fV3MLmabKIZ383XifUjFSwcoGee0v9qgPp8wy5svibE=
 github.com/go-logr/logr v0.2.1/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTgseGU=
 github.com/go-logr/zapr v0.1.0 h1:h+WVe9j6HAA01niTJPA/kKH0i7e0rLZBCwauQFcRE54=
 github.com/go-logr/zapr v0.1.0/go.mod h1:tabnROwaDl0UNxkVeFRbY8bwB37GwRv0P8lg6aAiEnk=
+github.com/go-logr/zapr v0.2.0 h1:v6Ji8yBW77pva6NkJKQdHLAJKrIJKRHz0RXwPqCHSR4=
 github.com/go-logr/zapr v0.2.0/go.mod h1:qhKdvif7YF5GI9NWEpyxTSSBdGmzkNguibrdCNVPunU=
 github.com/go-openapi/analysis v0.0.0-20180825180245-b006789cd277/go.mod h1:k70tL6pCuVxPJOHXQ+wIac1FUrvNkHolPie/cLEU6hI=
 github.com/go-openapi/analysis v0.17.0/go.mod h1:IowGgpVeD0vNm45So8nr+IcQ3pxVtpRoBWb8PVZO0ik=

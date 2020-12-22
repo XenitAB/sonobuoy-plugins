@@ -1,0 +1,15 @@
+sonobuoy-config:
+  driver: Job
+  plugin-name: xks
+  result-format: manual
+spec:
+  image: ghcr.io/xenitab/sonobuoy-plugins/xks:latest
+  imagePullPolicy: Never
+  name: plugin
+  resources: {}
+  volumeMounts:
+  - mountPath: /tmp/results
+    name: results
+  env:
+  - name: BASE_URL
+    value: ""
