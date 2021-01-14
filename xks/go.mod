@@ -17,6 +17,7 @@ require (
 	go.uber.org/zap v1.11.0 // indirect
 	google.golang.org/genproto v0.0.0-20200619004808-3e7fca5c55db // indirect
 	google.golang.org/grpc v1.29.1 // indirect
+	k8s.io/api v0.19.4
 	k8s.io/apimachinery v0.19.4
 	k8s.io/client-go v1.19.0
 	k8s.io/component-base v0.19.0
