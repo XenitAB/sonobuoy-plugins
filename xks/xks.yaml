@@ -11,5 +11,9 @@ spec:
   - mountPath: /tmp/results
     name: results
   env:
-  - name: BASE_URL
+  - name: E2E_SKIP
+    value: ""
+  - name: E2E_FOCUS
+    value: ""
+  - name: E2E_EXTRA_ARGS
     value: ""

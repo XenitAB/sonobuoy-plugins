@@ -15,7 +15,6 @@ package e2e
 
 import (
 	"flag"
-	"fmt"
 	"math/rand"
 	"os"
 	"testing"
@@ -40,8 +39,6 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	fmt.Println("testing")
-
 	klog.SetOutput(GinkgoWriter)
 	logs.InitLogs()
 

@@ -17,7 +17,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-var _ = ginkgo.Describe("fluxv2", func() {
+var _ = ginkgo.Describe("FluxV2 Health Check [Feature:FluxV2]", func() {
 	f := framework.NewDefaultFramework("fluxv2")
 
 	var k8sClient client.Client

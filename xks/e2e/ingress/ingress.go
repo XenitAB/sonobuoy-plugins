@@ -9,34 +9,45 @@ import (
 	"github.com/onsi/ginkgo"
 
 	v1 "k8s.io/api/core/v1"
-	networkingv1 "k8s.io/api/networking/v1"
+	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/apimachinery/pkg/util/wait"
 	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/kubernetes/test/e2e/framework"
+	e2econfig "k8s.io/kubernetes/test/e2e/framework/config"
 	e2epod "k8s.io/kubernetes/test/e2e/framework/pod"
 	imageutils "k8s.io/kubernetes/test/utils/image"
 )
 
-var _ = ginkgo.Describe("Ingress TLS", func() {
+var ingressConfig struct {
+	Host string `usage:"hostname to use when creating ingress"`
+}
+var _ = e2econfig.AddOptions(&ingressConfig, "ingress")
+
+var _ = ginkgo.Describe("Ingress TLS [Feature:Ingress]", func() {
 	var ns string
 	var c clientset.Interface
-
 	f := framework.NewDefaultFramework("ingress")
-
-	ingressHost := ""
-
 	ginkgo.BeforeEach(func() {
+		if len(ingressConfig.Host) == 0 {
+			panic("ingress.host is required to be set")
+		}
+
 		c = f.ClientSet
 		ns = f.Namespace.Name
 	})
 
 	ginkgo.It("should support tls ingress", func() {
+		fmt.Println()
+
 		ginkgo.By("creating a test pod")
 		pod, err := c.CoreV1().Pods(ns).Create(context.TODO(), &v1.Pod{
 			ObjectMeta: metav1.ObjectMeta{
-				GenerateName: "ingress-tls-",
+				Name: "ingress-tls",
+				Labels: map[string]string{
+					"app": "ingress-tls",
+				},
 			},
 			Spec: v1.PodSpec{
 				Containers: []v1.Container{
@@ -55,14 +66,14 @@ var _ = ginkgo.Describe("Ingress TLS", func() {
 		ginkgo.By("creating a service for the pod")
 		svc, err := c.CoreV1().Services(ns).Create(context.TODO(), &v1.Service{
 			ObjectMeta: metav1.ObjectMeta{
-				GenerateName: "ingress-tls-",
+				Name: "ingress-tls",
 			},
 			Spec: v1.ServiceSpec{
 				Ports: []v1.ServicePort{
 					{
 						Name:       "http",
 						Port:       80,
-						TargetPort: intstr.IntOrString{IntVal: 8080},
+						TargetPort: intstr.IntOrString{IntVal: 80},
 					},
 				},
 				Selector: map[string]string{
@@ -72,32 +83,33 @@ var _ = ginkgo.Describe("Ingress TLS", func() {
 		}, metav1.CreateOptions{})
 		framework.ExpectNoError(err)
 
+		tlsIngressHost := fmt.Sprintf("ingress-tls.%s", ingressConfig.Host)
 		ginkgo.By("creating a ingress with tls configuration")
-		prefixPathType := networkingv1.PathTypePrefix
-		_, err = c.NetworkingV1().Ingresses(ns).Create(context.TODO(), &networkingv1.Ingress{
+		prefixPathType := extensionsv1beta1.PathTypePrefix
+		_, err = c.ExtensionsV1beta1().Ingresses(ns).Create(context.TODO(), &extensionsv1beta1.Ingress{
 			ObjectMeta: metav1.ObjectMeta{
-				GenerateName: "ingress-tls-",
+				Name: "ingress-tls",
 				Labels: map[string]string{
 					"app": "ingress-tls",
 				},
+				Annotations: map[string]string{
+					"cert-manager.io/cluster-issuer":   "letsencrypt",
+					"kubernetes.io/ingress.allow-http": "false",
+				},
 			},
-			Spec: networkingv1.IngressSpec{
-				Rules: []networkingv1.IngressRule{
+			Spec: extensionsv1beta1.IngressSpec{
+				Rules: []extensionsv1beta1.IngressRule{
 					{
-						Host: ingressHost,
-						IngressRuleValue: networkingv1.IngressRuleValue{
-							HTTP: &networkingv1.HTTPIngressRuleValue{
-								Paths: []networkingv1.HTTPIngressPath{
+						Host: tlsIngressHost,
+						IngressRuleValue: extensionsv1beta1.IngressRuleValue{
+							HTTP: &extensionsv1beta1.HTTPIngressRuleValue{
+								Paths: []extensionsv1beta1.HTTPIngressPath{
 									{
 										PathType: &prefixPathType,
 										Path:     "/",
-										Backend: networkingv1.IngressBackend{
-											Service: &networkingv1.IngressServiceBackend{
-												Port: networkingv1.ServiceBackendPort{
-													Name: "http",
-												},
-												Name: svc.Name,
-											},
+										Backend: extensionsv1beta1.IngressBackend{
+											ServiceName: svc.Name,
+											ServicePort: intstr.FromString("http"),
 										},
 									},
 								},
@@ -105,15 +117,21 @@ var _ = ginkgo.Describe("Ingress TLS", func() {
 						},
 					},
 				},
+				TLS: []extensionsv1beta1.IngressTLS{
+					{
+						Hosts:      []string{tlsIngressHost},
+						SecretName: "ingress-tls-cert",
+					},
+				},
 			},
 		}, metav1.CreateOptions{})
 		framework.ExpectNoError(err)
 
 		ginkgo.By("expecting https request to work")
-		err = wait.Poll(10*time.Second, 1*time.Minute, func() (bool, error) {
-			resp, err := http.Get(fmt.Sprintf("https://%s", ingressHost))
+		err = wait.Poll(10*time.Second, 15*time.Minute, func() (bool, error) {
+			resp, err := http.Get(fmt.Sprintf("https://%s", tlsIngressHost))
 			if err != nil {
-				return false, err
+				return false, nil
 			}
 
 			if resp.StatusCode != http.StatusOK {
@@ -124,9 +142,9 @@ var _ = ginkgo.Describe("Ingress TLS", func() {
 		})
 		framework.ExpectNoError(err)
 
-		ginkgo.By("expecting https redirect to work")
+		ginkgo.By("expecting https redirect")
 		err = wait.Poll(10*time.Second, 1*time.Minute, func() (bool, error) {
-			resp, err := http.Get(fmt.Sprintf("http://%s", ingressHost))
+			resp, err := http.Get(fmt.Sprintf("http://%s", tlsIngressHost))
 			if err != nil {
 				return false, err
 			}
