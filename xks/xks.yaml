@@ -1,19 +1,19 @@
 sonobuoy-config:
   driver: Job
   plugin-name: xks
-  result-format: manual
+  result-format: junit
 spec:
   image: ghcr.io/xenitab/sonobuoy-plugins/xks:latest
   imagePullPolicy: Never
-  name: plugin
+  name: xks
   resources: {}
   volumeMounts:
-  - mountPath: /tmp/results
-    name: results
+    - mountPath: /tmp/results
+      name: results
   env:
-  - name: E2E_SKIP
-    value: ""
-  - name: E2E_FOCUS
-    value: ""
-  - name: E2E_EXTRA_ARGS
-    value: ""
+    - name: E2E_SKIP
+      value: ""
+    - name: E2E_FOCUS
+      value: ""
+    - name: E2E_EXTRA_ARGS
+      value: ""

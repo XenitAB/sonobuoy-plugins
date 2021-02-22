@@ -16,6 +16,7 @@ package e2e
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 	"testing"
@@ -158,10 +159,22 @@ func RunE2ETests(t *testing.T) {
 	// Log failure immediately in addition to recording the test failure.
 	gomega.RegisterFailHandler(framework.Fail)
 
-	// Run tests through the Ginkgo runner with output to console + JUnit for Jenkins
-	var r []ginkgo.Reporter
+	var rr []ginkgo.Reporter
+	var resultFilepath string
 	if framework.TestContext.ReportDir != "" {
-		r = append(r, reporters.NewJUnitReporter(path.Join(framework.TestContext.ReportDir, fmt.Sprintf("junit_%v%02d.xml", framework.TestContext.ReportPrefix, config.GinkgoConfig.ParallelNode))))
+		resultFilepath = path.Join(framework.TestContext.ReportDir, fmt.Sprintf("junit_%v%02d.xml", framework.TestContext.ReportPrefix, config.GinkgoConfig.ParallelNode))
+		junitReporter := reporters.NewJUnitReporter(resultFilepath)
+		rr = []ginkgo.Reporter{junitReporter}
 	}
-	ginkgo.RunSpecsWithDefaultAndCustomReporters(t, "PMEM E2E suite", r)
+	ginkgo.RunSpecsWithDefaultAndCustomReporters(t, "PMEM E2E suite", rr)
+
+	// Tells sonobuoy where to get the test results
+	if resultFilepath != "" {
+		doneFilepath := "/tmp/results/done"
+		err := ioutil.WriteFile(doneFilepath, []byte(resultFilepath), 0644)
+		if err != nil {
+			t.Error(err.Error())
+			return
+		}
+	}
 }
