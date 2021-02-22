@@ -30,16 +30,32 @@ var _ = ginkgo.Describe("Ingress TLS [Feature:Ingress]", func() {
 	var c clientset.Interface
 	f := framework.NewDefaultFramework("ingress")
 	ginkgo.BeforeEach(func() {
-		if len(ingressConfig.Host) == 0 {
-			panic("ingress.host is required to be set")
-		}
-
 		c = f.ClientSet
 		ns = f.Namespace.Name
 	})
 
-	ginkgo.It("should support tls ingress", func() {
-		fmt.Println()
+	ginkgo.It("each ingress resource should have a exernal ip set [HealthCheck] [HealthReport]", func() {
+		ingressList, err := c.ExtensionsV1beta1().Ingresses("").List(context.TODO(), metav1.ListOptions{})
+		framework.ExpectNoError(err)
+
+		ginkgo.By("checking the loadbalancer ip for each ingress")
+		err = nil
+		errs := []error{}
+		for _, ingress := range ingressList.Items {
+			if len(ingress.Status.LoadBalancer.Ingress) == 0 {
+				errs = append(errs, fmt.Errorf(""))
+			}
+		}
+		if len(errs) != 0 {
+			err = fmt.Errorf("%s", errs)
+		}
+		framework.ExpectNoError(err)
+	})
+
+	ginkgo.It("should support tls ingress [Slow]", func() {
+		if len(ingressConfig.Host) == 0 {
+			panic("ingress.host is required to be set")
+		}
 
 		ginkgo.By("creating a test pod")
 		pod, err := c.CoreV1().Pods(ns).Create(context.TODO(), &v1.Pod{
