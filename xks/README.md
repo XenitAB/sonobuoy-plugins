@@ -30,6 +30,10 @@ Tests that public DNS records and valid certificates can be provisioned in a clu
 
 Cheks best practice security hardening is enabled in the cluster.
 
+### High Availabiltiy
+
+Checks critical configuration for high availibiltiy which could affect uptime of an application.
+
 ## Development
 
 When developing it might be easier to run the tests locally against

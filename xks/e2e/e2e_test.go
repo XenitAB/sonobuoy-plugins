@@ -35,6 +35,7 @@ import (
 
 	// test sources
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/fluxv2"
+	_ "github.com/xenitab/sonobuoy-plugins/e2e/high-availability"
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/ingress"
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/pod-security"
 )
