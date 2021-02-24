@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("Ingress TLS [Feature:Ingress]", func() {
 		ns = f.Namespace.Name
 	})
 
-	ginkgo.It("each ingress resource should have a exernal ip set [HealthCheck] [HealthReport]", func() {
+	ginkgo.It("each ingress resource should have a exernal ip set [Troubleshoot]", func() {
 		ingressList, err := c.ExtensionsV1beta1().Ingresses("").List(context.TODO(), metav1.ListOptions{})
 		framework.ExpectNoError(err)
 

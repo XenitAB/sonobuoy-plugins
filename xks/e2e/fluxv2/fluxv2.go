@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("FluxV2 Health Check [Feature:FluxV2]", func() {
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
 
-	ginkgo.It("should should successfully bootstrap", func() {
+	ginkgo.It("should should successfully bootstrap [Troubleshoot]", func() {
 		ginkgo.By("checking the flux-system git source")
 		key := types.NamespacedName{
 			Name:      "flux-system",
@@ -47,7 +47,7 @@ var _ = ginkgo.Describe("FluxV2 Health Check [Feature:FluxV2]", func() {
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 		gomega.Expect(res.Status.String()).To(gomega.Equal("Current"))
 
-		ginkgo.By("checking the flux-system kustomization")
+		ginkgo.By("checking the flux-system kustomization [Troubleshoot]")
 		key = types.NamespacedName{
 			Name:      "flux-system",
 			Namespace: "flux-system",
