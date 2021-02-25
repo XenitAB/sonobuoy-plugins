@@ -26,35 +26,33 @@ import (
 	// See https://github.com/kubernetes/kubernetes/issues/74827
 	// "github.com/onsi/ginkgo"
 
-	"k8s.io/component-base/logs"
-	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/test/e2e/framework"
 	"k8s.io/kubernetes/test/e2e/framework/config"
 
-	. "github.com/onsi/ginkgo"
-
 	// test sources
+	_ "github.com/xenitab/sonobuoy-plugins/e2e/cluster-health"
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/fluxv2"
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/high-availability"
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/ingress"
 	_ "github.com/xenitab/sonobuoy-plugins/e2e/pod-security"
 )
 
-func TestMain(m *testing.M) {
-	klog.SetOutput(GinkgoWriter)
-	logs.InitLogs()
-
+func handleFlags() {
 	config.CopyFlags(config.Flags, flag.CommandLine)
 	framework.RegisterCommonFlags(flag.CommandLine)
 	framework.RegisterClusterFlags(flag.CommandLine)
-	// Skip slow or distruptive tests by default.
-	flag.Set("ginkgo.skip", `\[Slow|Disruptive\]`)
 	flag.Parse()
+}
 
-	// Register framework flags, then handle flags.
+func TestMain(m *testing.M) {
+	var versionFlag bool
+	flag.CommandLine.BoolVar(&versionFlag, "version", false, "Displays version information.")
+
+	// Register test flags, then parse flags.
+	handleFlags()
+
 	framework.AfterReadingAllFlags(&framework.TestContext)
 
-	// Now run the test suite.
 	rand.Seed(time.Now().UnixNano())
 	os.Exit(m.Run())
 }

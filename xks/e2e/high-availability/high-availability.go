@@ -21,7 +21,7 @@ var _ = ginkgo.Describe("High availibiltiy configuration [Feature:HighAvailabili
 		clientSet = f.ClientSet
 	})
 
-	ginkgo.It("deployment replicas should run on multiple nodes [GoodPractice]", func() {
+	ginkgo.It("deployment replicas should run on multiple nodes [Troubleshoot]", func() {
 		depList, err := clientSet.AppsV1().Deployments("").List(context.TODO(), metav1.ListOptions{})
 		framework.ExpectNoError(err, "could not list deployments")
 
